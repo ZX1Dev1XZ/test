@@ -1,0 +1,41 @@
+import requests
+from flask import Flask, request
+
+app = Flask(name)
+
+Discord application credentials
+CLIENT_ID = 'YOUR_CLIENT_ID'
+CLIENT_SECRET = 'YOUR_CLIENT_SECRET'
+REDIRECT_URI = 'https://your-replit-project-name.your-username.repl.co/callback'
+
+Function to perform the OAuth2 flow and obtain the access token
+def get_access_token(code):
+    token_url = 'https://discord.com/api/oauth2/token'
+    data = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': REDIRECT_URI
+    }
+
+    response = requests.post(token_url, data=data)
+    token_data = response.json()
+    if 'access_token' in token_data:
+        return token_data['access_token']
+    else:
+        return None
+
+Endpoint to handle the OAuth2 callback
+@app.route('/callback')
+def callback():
+    code = request.args.get('code')
+    if code:
+        with open('aaa.txt', 'w') as file:
+            file.write(code)
+        return 'Authorization successful. Access token saved.'
+    else:
+        return 'Authorization failed. Missing code.'
+
+if name == 'main':
+    app.run(host='0.0.0.0', port=8080)
